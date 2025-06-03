@@ -48,3 +48,21 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Local Terraform directories and files
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Ignore sensitive variable files
+*.tfvars
+
+# Ignore override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# IDE files
+*.swp
+.idea/
+.vscode/

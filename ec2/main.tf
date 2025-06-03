@@ -36,14 +36,27 @@ resource "aws_vpc_security_group_egress_rule" "private_nat" {
   description       = "Allow all outbound traffic"
 }
 
+data "aws_ssm_parameter" "amazon_linux_2023" {
+  name = var.amazon_linux_2023
+}
+
 // Private EC2 Instance
 resource "aws_instance" "private" {
   count                  = var.private_instance_count
-  ami                    = var.amazon_linux_2023
+  ami                    = data.aws_ssm_parameter.amazon_linux_2023.value
   instance_type          = "t2.micro"
   subnet_id              = var.subnet_ids[1]
   vpc_security_group_ids = [aws_security_group.private_sg.id]
   key_name               = var.key_name
+
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo yum update -y
+              sudo yum install -y httpd
+              sudo systemctl start httpd
+              sudo systemctl enable httpd
+              echo "Hello World" | sudo tee /var/www/html/index.html
+              EOF
 
   tags = {
     Name = "private-instance"

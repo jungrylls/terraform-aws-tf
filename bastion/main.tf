@@ -75,24 +75,19 @@ resource "aws_iam_instance_profile" "bastion_profile" {
   role = aws_iam_role.bastion_role.name
 }
 
+data "aws_ssm_parameter" "amazon_linux_2023" {
+  name = var.amazon_linux_2023
+}
+
 // Bastion EC2 Instance
 resource "aws_instance" "bastion" {
-  ami                         = var.amazon_linux_2023
+  ami                         = data.aws_ssm_parameter.amazon_linux_2023.value
   instance_type               = "t2.micro"
   subnet_id                   = var.subnet_ids[0]
   key_name                    = var.key_name
   vpc_security_group_ids      = [aws_security_group.bastion_sg.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.bastion_profile.name
-
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              sudo yum install -y httpd
-              sudo systemctl start httpd
-              sudo systemctl enable httpd
-              echo "Hello World" | sudo tee /var/www/html/index.html
-              EOF
 
   tags = {
     Name = "bastion"

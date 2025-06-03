@@ -6,7 +6,7 @@ variable "subnet_ids" {
 variable "private_instance_count" {
   description = "Number of private EC2 instances to create"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "alb_sg_id" {

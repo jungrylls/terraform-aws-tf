@@ -30,17 +30,15 @@ output "agent" {
 
 output "agent_add" {
   description = "Add the private key to the SSH agent"
-  value       = "ssh-add ~/.ssh/moon-onboarding.pem"
+  value       = "ssh-add ~/.ssh/tecace-lib.pem"
 }
 
 output "ssh_command" {
-  description = "SSH command to access the bastion (assumes your private key is moon-onboarding.pem)"
+  description = "SSH command to access the bastion (assumes your private key is tecace-lib.pem)"
   value       = "ssh -A ec2-user@${module.bastion.bastion_public_ip}"
 }
 
 output "private_ssh_command" {
-  description = "SSH command to access the private instance (assumes your private key is moon-onboarding.pem)"
-  value       = [
-    for ip in module.ec2.private_instance_ips : "ssh -A ec2-user@${ip}"
-  ]
+  description = "SSH command to access the private instance (assumes your private key is tecace-lib.pem)"
+  value       = [for ip in module.ec2.private_instance_ips : "ssh -A ec2-user@${ip}"]
 }

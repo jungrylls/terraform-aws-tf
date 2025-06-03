@@ -1,11 +1,11 @@
 // Security group for the private instance
 resource "aws_security_group" "private_sg" {
-  name        = "private-sg"
+  name        = var.private_sg_name
   description = "Allow SSH from bastion host"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "private-sg"
+    Name = "tecace-private-sg"
   }
 }
 
@@ -59,6 +59,6 @@ resource "aws_instance" "private" {
               EOF
 
   tags = {
-    Name = "private-instance"
+    Name = "tecace-private-instance"
   }
 }

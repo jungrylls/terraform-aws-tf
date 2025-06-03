@@ -1,11 +1,11 @@
 # ALB Security Group
 resource "aws_security_group" "alb_sg" {
-  name        = "alb-sg"
+  name        = var.alb_sg_name
   description = "Allow HTTP to ALB"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "alb-sg"
+    Name = "tecace-alb-sg"
   }
 }
 
@@ -31,7 +31,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_http" {
 
 # Target Group
 resource "aws_lb_target_group" "alb_tg" {
-  name        = "tg"
+  name        = var.alb_tg_name
   port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -61,7 +61,7 @@ resource "aws_lb_target_group_attachment" "tg_attachments" {
 
 # Application Load Balancer
 resource "aws_lb" "alb" {
-  name               = "alb"
+  name               = var.alb_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
@@ -69,7 +69,7 @@ resource "aws_lb" "alb" {
   enable_deletion_protection = false
 
   tags = {
-    Name = "alb"
+    Name = "tecace-alb"
   }
 }
 

@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "vpc"
+    Name = "tecace-vpc"
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet-${count.index + 1}"
+    Name = "tecace-public-subnet-${count.index + 1}"
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_subnet" "private" {
   availability_zone = "ca-central-1${element(["a", "b"], count.index)}"
 
   tags = {
-    Name = "private-subnet-${count.index + 1}"
+    Name = "tecace-private-subnet-${count.index + 1}"
   }
 }
 
@@ -39,14 +39,14 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "igw"
+    Name = "tecace-igw"
   }
 }
 
 // Elastic IP for NAT Gateway
 resource "aws_eip" "nat" {
  tags = {
-    Name = "nat-eip"
+    Name = "tecace-nat-eip"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
-    Name = "nat-gateway"
+    Name = "tecace-nat-gateway"
   }
 
   depends_on = [aws_internet_gateway.igw]
@@ -72,7 +72,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "public-rt"
+    Name = "tecace-public-rt"
   }
 }
 
@@ -86,7 +86,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "private-rt"
+    Name = "tecace-private-rt"
   }
 }
 

@@ -1,11 +1,11 @@
 # RDS Security Group
 resource "aws_security_group" "rds_sg" {
-  name        = "rds-sg"
+  name        = var.rds_sg_name
   description = "Allow DB access from bastion only"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "rds-sg"
+    Name = "tecace-rds-sg"
   }
 }
 
@@ -21,11 +21,11 @@ resource "aws_vpc_security_group_ingress_rule" "rds_mysql" {
 
 # DB Subnet Group
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds-subnet-group"
+  name       = var.rds_subnet_group_name
   subnet_ids = var.subnet_ids
 
   tags = {
-    Name = "rds-subnet-group"
+    Name = "tecace-rds-subnet-group"
   }
 }
 
@@ -44,6 +44,6 @@ resource "aws_db_instance" "rds" {
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
 
   tags = {
-    Name = "rds"
+    Name = "tecace-rds"
   }
 }

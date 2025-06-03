@@ -1,11 +1,11 @@
 // Security group for the bastion
 resource "aws_security_group" "bastion_sg" {
-  name        = "bastion-sg"
-  description = "Allow SSH and HTTP from anywhere"
+  name        = var.bastion_sg_name
+  description = "Allow SSH from the company IP and to private resources"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "bastion-sg"
+    Name = "tecace-bastion-sg"
   }
 }
 
@@ -49,7 +49,7 @@ resource "aws_vpc_security_group_egress_rule" "bastion_rds" {
 
 // IAM Role, Policy, and Instance Profile
 resource "aws_iam_role" "bastion_role" {
-  name = "bastion-role"
+  name = var.bastion_role_name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -61,7 +61,7 @@ resource "aws_iam_role" "bastion_role" {
     }]
   })
   tags = {
-    Name = "bastion-role"
+    Name = "tecace-bastion-role"
   }
 }
 
@@ -90,6 +90,6 @@ resource "aws_instance" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.bastion_profile.name
 
   tags = {
-    Name = "bastion"
+    Name = "tecace-bastion"
   }
 }

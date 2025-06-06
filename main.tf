@@ -17,6 +17,7 @@ module "vpc" {
   source = "./vpc"
 
   vpc_cidr        = var.vpc_cidr
+  region          = var.region
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
 }
@@ -47,11 +48,11 @@ module "ec2" {
   source        = "./ec2"
   private_sg_name = var.private_sg_name
   vpc_id        = module.vpc.vpc_id
-  subnet_ids    = concat(module.vpc.public_subnet_ids, module.vpc.private_subnet_ids)
+  subnet_ids    = module.vpc.private_subnet_ids
   bastion_sg_id = module.bastion.bastion_sg_id
   alb_sg_id     = module.alb.alb_sg_id
   amazon_linux_2023 = var.amazon_linux_2023
-  private_instance_count = 1
+  private_instance_count = 2
   key_name      = "tecace-lib"
 }
 

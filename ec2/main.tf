@@ -45,18 +45,9 @@ resource "aws_instance" "private" {
   count                  = var.private_instance_count
   ami                    = data.aws_ssm_parameter.amazon_linux_2023.value
   instance_type          = "t2.micro"
-  subnet_id              = var.subnet_ids[1]
+  subnet_id              = var.subnet_ids[count.index % length(var.subnet_ids)]
   vpc_security_group_ids = [aws_security_group.private_sg.id]
   key_name               = var.key_name
-
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              sudo yum install -y httpd
-              sudo systemctl start httpd
-              sudo systemctl enable httpd
-              echo "Hello World" | sudo tee /var/www/html/index.html
-              EOF
 
   tags = {
     Name = "tecace-private-instance"

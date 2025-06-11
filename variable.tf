@@ -2,6 +2,14 @@ variable "region" {
   default = "ca-central-1"
 }
 
+variable "tags" {
+  type = map(string)
+  default = {
+    Project     = "TecAce"
+    ManagedBy   = "Terraform"
+  }
+}
+
 variable "vpc_cidr" {
   default = "10.1.0.0/16"
 }

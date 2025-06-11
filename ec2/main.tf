@@ -4,40 +4,40 @@ resource "aws_security_group" "private_sg" {
   description = "Allow SSH from bastion host"
   vpc_id      = var.vpc_id
 
-  tags = {
-    Name = "tecace-private-sg"
+  tags = var.tags
+  
+}
+
+resource "aws_vpc_security_group_ingress_rule" "custom_ingress" {
+  for_each = {
+    for idx, rule in var.ingress_rules :
+    idx => rule
   }
-}
 
-// Ingress rule for the private instance
-resource "aws_vpc_security_group_ingress_rule" "private_ssh" {
   security_group_id = aws_security_group.private_sg.id
-  referenced_security_group_id = var.bastion_sg_id
-  from_port         = 22
-  to_port           = 22
-  ip_protocol       = "tcp"
-  description       = "Allow SSH from the bastion"
+  from_port         = each.value.from_port
+  to_port           = each.value.to_port
+  ip_protocol       = each.value.protocol
+  description       = lookup(each.value, "description", null)
+
+  cidr_ipv4                 = lookup(each.value, "cidr_ipv4", null)
+  referenced_security_group_id = lookup(each.value, "sg_id", null)
 }
 
-resource "aws_vpc_security_group_ingress_rule" "private_http" {
+resource "aws_vpc_security_group_egress_rule" "custom_egress" {
+  for_each = {
+    for idx, rule in var.egress_rules :
+    idx => rule
+  }
+
   security_group_id = aws_security_group.private_sg.id
-  referenced_security_group_id = var.alb_sg_id
-  from_port         = 80
-  to_port           = 80
-  ip_protocol       = "tcp"
-  description       = "Allow HTTP inbound"
-}
+  from_port         = lookup(each.value, "from_port", null)
+  to_port           = lookup(each.value, "to_port", null)
+  ip_protocol       = each.value.protocol
+  description       = lookup(each.value, "description", null)
 
-// Egress rule through the NAT
-resource "aws_vpc_security_group_egress_rule" "private_nat" {
-  security_group_id = aws_security_group.private_sg.id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1"
-  description       = "Allow all outbound traffic"
-}
-
-data "aws_ssm_parameter" "amazon_linux_2023" {
-  name = var.amazon_linux_2023
+  cidr_ipv4                 = lookup(each.value, "cidr_ipv4", null)
+  referenced_security_group_id = lookup(each.value, "sg_id", null)
 }
 
 // Private EC2 Instance
